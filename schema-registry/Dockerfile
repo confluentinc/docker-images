@@ -1,5 +1,5 @@
 # Builds a docker image for the Confluent schema registry.
-# Expects links to "kafka" and "zk" containers.
+# Expects links to "kafka" and "zookeeper" containers.
 #
 # Usage:
 #   docker build -t confluent/schema-registry schema-registry

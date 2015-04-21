@@ -15,3 +15,4 @@ RUN groupadd -r confluent && \
 EXPOSE 8081
 COPY schema-registry-docker.sh /
 CMD /schema-registry-docker.sh
+USER confluent

@@ -2,10 +2,10 @@
 # Needs to be linked with a Zookeeper container with alias "zookeeper".
 #
 # Usage:
-#   docker build -t confluent/kafka:1.0-test1 kafka
-#   docker run -d --name kafka --link zookeeper:zookeeper confluent/kafka:1.0-test1
+#   docker build -t confluent/kafka kafka
+#   docker run -d --name kafka --link zookeeper:zookeeper confluent/kafka
 
-FROM confluent/platform:1.0-test1
+FROM confluent/platform
 
 RUN groupadd -r confluent && \
     useradd -r -g confluent confluent && \

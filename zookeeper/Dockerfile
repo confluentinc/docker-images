@@ -1,10 +1,10 @@
 # Builds a docker image running Apache Zookeeper. Intended for use with Kafka.
 #
 # Usage:
-#   docker build -t confluent/zookeeper:1.0-test1 zookeeper
-#   docker run -d --name zookeeper confluent/zookeeper:1.0-test1
+#   docker build -t confluent/zookeeper zookeeper
+#   docker run -d --name zookeeper confluent/zookeeper
 
-FROM confluent/platform:1.0-test1
+FROM confluent/platform
 
 # Send all logs to stdout (so that they are shown by `docker logs`)
 RUN rm /etc/kafka/log4j.properties && \

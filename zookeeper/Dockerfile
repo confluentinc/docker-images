@@ -6,21 +6,24 @@
 
 FROM confluent/platform
 
+ENV ZK_DIR "/var/lib/zookeeper"
+ENV ZK_USER confluent
+ENV ZK_GROUP confluent
+ENV KAFKA_LOG4J_OPTS -Dlog4j.configuration=file:/etc/kafka/log4j.properties
+
 # Send all logs to stdout (so that they are shown by `docker logs`)
-RUN rm /etc/kafka/log4j.properties && \
-    echo 'log4j.rootLogger=INFO, stdout' >> /etc/kafka/log4j.properties && \
-    echo 'log4j.appender.stdout=org.apache.log4j.ConsoleAppender' >> /etc/kafka/log4j.properties && \
-    echo 'log4j.appender.stdout.layout=org.apache.log4j.PatternLayout' >> /etc/kafka/log4j.properties && \
-    echo 'log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n' >> /etc/kafka/log4j.properties
+RUN rm /etc/kafka/log4j.properties &&\
+    echo 'log4j.rootLogger=INFO, stdout' >> /etc/kafka/log4j.properties &&\
+    echo 'log4j.appender.stdout=org.apache.log4j.ConsoleAppender' >> /etc/kafka/log4j.properties &&\
+    echo 'log4j.appender.stdout.layout=org.apache.log4j.PatternLayout' >> /etc/kafka/log4j.properties &&\
+    echo 'log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n' >> /etc/kafka/log4j.properties &&\
+    groupadd -r ${ZK_GROUP} &&\
+    useradd -r -g ${ZK_GROUP} ${ZK_USER} &&\
+    mkdir ${ZK_DIR} &&\
+    chown -R ${ZK_GROUP}:${ZK_USER} ${ZK_DIR}
 
-RUN groupadd -r confluent && \
-    useradd -r -g confluent confluent && \
-    mkdir /var/lib/zookeeper && \
-    chown -R confluent:confluent /var/lib/zookeeper
-
-USER confluent
-VOLUME /var/lib/zookeeper
+USER ${ZK_USER}
+VOLUME ["${ZK_DIR}"]
 EXPOSE 2181
 
-ENV KAFKA_LOG4J_OPTS -Dlog4j.configuration=file:/etc/kafka/log4j.properties
 CMD /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties

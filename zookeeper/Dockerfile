@@ -26,4 +26,4 @@ USER ${ZK_USER}
 VOLUME ["${ZK_DIR}"]
 EXPOSE 2181
 
-CMD /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties
+CMD ["/usr/bin/zookeeper-server-start", "/etc/kafka/zookeeper.properties"]

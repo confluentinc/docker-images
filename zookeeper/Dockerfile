@@ -7,8 +7,8 @@
 FROM confluent/platform
 
 ENV ZK_DATA_DIR "/var/lib/zookeeper"
-ENV ZK_USER confluent
-ENV ZK_GROUP confluent
+ENV CONFLUENT_USER confluent
+ENV CONFLUENT_GROUP confluent
 ENV KAFKA_LOG4J_OPTS -Dlog4j.configuration=file:/etc/kafka/log4j.properties
 
 COPY zk-docker.sh /usr/local/bin/
@@ -19,13 +19,13 @@ RUN rm /etc/kafka/log4j.properties &&\
     echo 'log4j.appender.stdout=org.apache.log4j.ConsoleAppender' >> /etc/kafka/log4j.properties &&\
     echo 'log4j.appender.stdout.layout=org.apache.log4j.PatternLayout' >> /etc/kafka/log4j.properties &&\
     echo 'log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n' >> /etc/kafka/log4j.properties &&\
-    groupadd -r ${ZK_GROUP} &&\
-    useradd -r -g ${ZK_GROUP} ${ZK_USER} &&\
+    groupadd -r ${CONFLUENT_GROUP} &&\
+    useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
     mkdir ${ZK_DATA_DIR} &&\
-    chown -R ${ZK_GROUP}:${ZK_USER} ${ZK_DATA_DIR} /usr/local/bin/zk-docker.sh &&\
+    chown -R ${CONFLUENT_GROUP}:${CONFLUENT_USER} ${ZK_DATA_DIR} /usr/local/bin/zk-docker.sh &&\
     chmod +x /usr/local/bin/zk-docker.sh
 
-USER ${ZK_USER}
+USER ${CONFLUENT_USER}
 VOLUME ["${ZK_DATA_DIR}"]
 
 # Expose client port (2188/tcp), peer connection port (2888/tcp), leader election port (3888/tcp)

@@ -44,7 +44,7 @@ export KAFKA_ZOOKEEPER_CONNECT
 export KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS
 
 # Download the config file, if given a URL
-if [ ! -z "$KAFKA_CFG_URL" ]; THEN
+if [ ! -z "$KAFKA_CFG_URL" ]; then
   echo "[kafka] Downloading Kafka config file from ${KAFKA_CFG_URL}"
   curl --location --silent --insecure --output ${kafka_cfg_file} ${KAFKA_CFG_URL}
   if [ $? -ne 0 ]; then

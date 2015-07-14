@@ -13,7 +13,7 @@ export SR_KAFKASTORE_CONNECTION_URL
 export SR_DEBUG
 
 # Download the config file, if given a URL
-if [ ! -z "$SR_CFG_URL" ]; THEN
+if [ ! -z "$SR_CFG_URL" ]; then
   echo "[SR] Downloading SR config file from ${SR_CFG_URL}"
   curl --location --silent --insecure --output ${sr_cfg_file} ${SR_CFG_URL}
   if [ $? -ne 0 ]; then

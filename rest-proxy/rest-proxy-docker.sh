@@ -15,7 +15,7 @@ export RP_ZOOKEEPER_CONNECT
 export RP_DEBUG
 
 # Download the config file, if given a URL
-if [ ! -z "$RP_CFG_URL" ]; THEN
+if [ ! -z "$RP_CFG_URL" ]; then
   echo "[RP] Downloading RP config file from ${RP_CFG_URL}"
   curl --location --silent --insecure --output ${rp_cfg_file} ${RP_CFG_URL}
   if [ $? -ne 0 ]; then

@@ -22,7 +22,7 @@ RUN rm /etc/kafka/log4j.properties &&\
     groupadd -r ${CONFLUENT_GROUP} &&\
     useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
     mkdir ${ZK_DATA_DIR} &&\
-    chown -R ${CONFLUENT_GROUP}:${CONFLUENT_USER} ${ZK_DATA_DIR} /usr/local/bin/zk-docker.sh &&\
+    chown -R ${CONFLUENT_GROUP}:${CONFLUENT_USER} ${ZK_DATA_DIR} /usr/local/bin/zk-docker.sh /etc/kafka/zookeeper.properties &&\
     chmod +x /usr/local/bin/zk-docker.sh
 
 USER ${CONFLUENT_USER}

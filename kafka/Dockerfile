@@ -7,15 +7,22 @@
 
 FROM confluent/platform
 
-RUN groupadd -r confluent && \
-    useradd -r -g confluent confluent && \
-    mkdir -p /var/lib/kafka /var/log/kafka && \
-    chown -R confluent:confluent /var/lib/kafka /var/log/kafka /etc/kafka/server.properties
+ENV CONFLUENT_USER confluent
+ENV CONFLUENT_GROUP confluent
+ENV KAFKA_LOGS "/var/log/kafka"
+ENV KAFKA_LOG_DIRS "/var/lib/kafka"
 
-COPY kafka-docker.sh /
+COPY kafka-docker.sh /usr/local/bin/
 
-USER confluent
-VOLUME ["/var/lib/kafka", "/var/log/kafka"]
+RUN groupadd -r confluent &&\
+    useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
+    mkdir -p /var/lib/kafka /var/log/kafka &&\
+    chown -R ${CONFLUENT_USER}:${CONFLUENT_GROUP} ${KAFKA_LOG_DIRS} ${KAFKA_LOGS} /etc/kafka/server.properties /usr/local/bin/kafka-docker.sh &&\
+    chmod +x /usr/local/bin/kafka-docker.sh
+
+
+USER ${CONFLUENT_USER}
+VOLUME ["${KAFKA_LOG_DIRS}", "${KAFKA_LOGS}"]
 EXPOSE 9092
 
-CMD /kafka-docker.sh
+CMD ["/usr/local/bin/kafka-docker.sh"]

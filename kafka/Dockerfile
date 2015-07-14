@@ -5,7 +5,7 @@
 #   docker build -t confluent/kafka kafka
 #   docker run -d --name kafka --link zookeeper:zookeeper confluent/kafka
 
-FROM confluent/platform
+FROM cgswong/confluent-platform:1.0
 
 ENV CONFLUENT_USER confluent
 ENV CONFLUENT_GROUP confluent

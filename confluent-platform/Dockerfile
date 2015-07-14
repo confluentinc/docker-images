@@ -12,7 +12,6 @@ ENV JAVA_VERSION_MAJOR 8
 ENV JAVA_VERSION_MINOR 45
 ENV JAVA_VERSION_BUILD 14
 ENV JAVA_BASE /opt/java
-ENV JAVA_HOME $JAVA_BASE/jre
 
 RUN apt-get -y update &&\
     apt-get upgrade -y &&\

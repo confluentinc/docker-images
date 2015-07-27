@@ -3,7 +3,7 @@
 #
 # Usage:
 #   docker build -t confluent/tools tools
-#   docker run -it --rm --link zookeeper:zookeeper --link kafka:kafka --link schema-registry:schema-registry \
+#   docker run -it --rm --link zookeeper:zookeeper --link kafka:kafka --link schema-registry:schema_registry \
 #       confluent/tools kafka-avro-console-consumer --property print.key=true --topic test --from-beginning
 
 FROM confluent/platform

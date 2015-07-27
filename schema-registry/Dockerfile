@@ -18,7 +18,7 @@ RUN groupadd -r ${CONFLUENT_GROUP} &&\
     chown -R ${CONFLUENT_USER}:${CONFLUENT_GROUP} /etc/schema-registry/schema-registry.properties /usr/local/bin/schema-registry-docker.sh &&\
     chmod +x /usr/local/bin/schema-registry-docker.sh
 
-USER confluent
+USER $CONFLUENT_USER
 EXPOSE 8081
 
-CMD ["/usr/local/bin/schema-registry-docker.sh"]
+ENTRYPOINT ["/usr/local/bin/schema-registry-docker.sh"]

@@ -6,13 +6,19 @@
 #   docker run -d --name schema-registry --link zookeeper:zookeeper --link kafka:kafka \
 #       --env SCHEMA_REGISTRY_AVRO_COMPATIBILITY_LEVEL=none confluent/schema-registry
 
-FROM confluent/platform
+FROM cgswong/confluent-platform:1.0
 
-RUN groupadd -r confluent && \
-    useradd -r -g confluent confluent && \
-    chown -R confluent:confluent /etc/schema-registry/schema-registry.properties
+ENV CONFLUENT_USER confluent
+ENV CONFLUENT_GROUP confluent
 
-EXPOSE 8081
-COPY schema-registry-docker.sh /
-CMD /schema-registry-docker.sh
+COPY schema-registry-docker.sh /usr/local/bin/
+
+RUN groupadd -r ${CONFLUENT_GROUP} &&\
+    useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
+    chown -R ${CONFLUENT_USER}:${CONFLUENT_GROUP} /etc/schema-registry/schema-registry.properties /usr/local/bin/schema-registry-docker.sh &&\
+    chmod +x /usr/local/bin/schema-registry-docker.sh
+
 USER confluent
+EXPOSE 8081
+
+CMD ["/usr/local/bin/schema-registry-docker.sh"]

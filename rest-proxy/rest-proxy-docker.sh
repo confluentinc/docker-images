@@ -31,4 +31,7 @@ for var in $(env | grep -v '^RP_CFG_' | grep '^RP_' | sort); do
   echo "${key}=${value}" >> ${rp_cfg_file}
 done
 
+# Fix for issue #77, PR #78: https://github.com/confluentinc/kafka-rest/pull/78/files
+sed -i 's/\"kafka\"//' /usr/bin/kafka-rest-run-class
+
 exec /usr/bin/kafka-rest-start ${rp_cfg_file}

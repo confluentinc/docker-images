@@ -1,7 +1,6 @@
 #!/bin/bash
 
-SCALA_VERSIONS="2.9.1 2.9.2 2.10.4 2.11.5"
-DEFAULT_SCALA_VERSION="2.10.4"
+. settings.sh
 
 for SCALA_VERSION in ${SCALA_VERSIONS}; do
     echo "Building confluent-platform-${SCALA_VERSION}"

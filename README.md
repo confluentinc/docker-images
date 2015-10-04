@@ -17,3 +17,25 @@ looks like this:
     # Start Schema Registry
     docker run -d --name schema-registry --link zookeeper:zookeeper \
         --link kafka:kafka confluent/schema-registry
+
+
+Building Images
+---------------
+
+For convenience, a `build.sh` script is provided to build all variants of
+images. This includes:
+
+* `confluent-platform` - Confluent Platform base images, with all Confluent
+  Platform packages installed. There are separate images for each Scala
+  version. These images are tagged as `confluent/platform-$SCALA_VERSION`, with
+  the default (2.10.4) also tagged as `confluent/platform`.
+* `confluent/zookeeper` - starts Zookeeper on port 2181.
+* `confluent/kafka` - starts Kafka on 9092.
+* `confluent/schema-registry` - starts the Schema Registry on 8081.
+* `confluent-tools` - provides tools with a few links to other containers for
+  commonly used tools.
+
+Note that all services are built only using the *default Scala version*. When
+run as services, the Scala version should not matter. If you need a specific
+Scala version, use the corresponding `confluent/platform-$SCALA_VERSION` image
+as your `FROM` line in your derived Dockerfile.

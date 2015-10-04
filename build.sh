@@ -19,5 +19,6 @@ done
 docker build -t confluent/zookeeper zookeeper/
 docker build -t confluent/kafka kafka/
 docker build -t confluent/schema-registry schema-registry/
+docker build -t confluent/rest-proxy rest-proxy/
 docker build -t confluent/tools tools/
 

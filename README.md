@@ -18,6 +18,9 @@ looks like this:
     docker run -d --name schema-registry --link zookeeper:zookeeper \
         --link kafka:kafka confluent/schema-registry
 
+    # Start REST Proxy
+    docker run -d --name rest-proxy --link zookeeper:zookeeper \
+        --link kafka:kafka --link schema-registry:schema-registry confluent/rest-proxy
 
 Building Images
 ---------------
@@ -32,6 +35,7 @@ images. This includes:
 * `confluent/zookeeper` - starts Zookeeper on port 2181.
 * `confluent/kafka` - starts Kafka on 9092.
 * `confluent/schema-registry` - starts the Schema Registry on 8081.
+* `confluent/rest-proxy` - starts the Kafka REST Proxy on 8082.
 * `confluent-tools` - provides tools with a few links to other containers for
   commonly used tools.
 

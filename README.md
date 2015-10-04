@@ -8,19 +8,37 @@ These images are currently intended for development use, not for production use.
 The Docker version of the [Confluent Quickstart](http://confluent.io/docs/current/quickstart.html)
 looks like this:
 
-    # Start Zookeeper
-    docker run -d --name zookeeper confluent/zookeeper
+    # Start Zookeeper and expose port 2181 for use by the host machine
+    docker run -d --name zookeeper -p 2181:2181 confluent/zookeeper
 
-    # Start Kafka
-    docker run -d --name kafka --link zookeeper:zookeeper confluent/kafka
+    # Start Kafka and expose port 9092 for use by the host machine
+    docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper confluent/kafka
 
-    # Start Schema Registry
-    docker run -d --name schema-registry --link zookeeper:zookeeper \
+    # Start Schema Registry and expose port 8081 for use by the host machine
+    docker run -d --name schema-registry -p 8081:8081 --link zookeeper:zookeeper \
         --link kafka:kafka confluent/schema-registry
 
-    # Start REST Proxy
-    docker run -d --name rest-proxy --link zookeeper:zookeeper \
+    # Start REST Proxy and expose port 8082 for use by the host machine
+    docker run -d --name rest-proxy -p 8082:8082 --link zookeeper:zookeeper \
         --link kafka:kafka --link schema-registry:schema-registry confluent/rest-proxy
+
+If you're using `boot2docker`, you'll need to adjust how you run Kafka:
+
+    # Get the IP address of the docker machine
+    DOCKER_MACHINE=`boot2docker ip`
+
+    # Start Kafka and expose port 9092 for use by the host machine
+    # Also configure the broker to use the docker machine's IP address
+    docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper \
+        --env KAFKA_ADVERTISED_HOST_NAME=$DOCKER_MACHINE confluent/kafka
+
+If all goes well when you run the quickstart, `docker ps` should give you something that looks like this:
+
+    CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS                    NAMES
+    7fc453ca701c        confluent/rest-proxy               "/usr/local/bin/rest-"   2 minutes ago       Up 2 minutes        0.0.0.0:8082->8082/tcp   rest-proxy
+    4d33d52a98bd        confluent/schema-registry:latest   "/usr/local/bin/schem"   2 minutes ago       Up 2 minutes        0.0.0.0:8081->8081/tcp   schema-registry     
+    d9613d3bc37d        confluent/kafka:latest             "/usr/local/bin/kafka"   2 minutes ago       Up 2 minutes        0.0.0.0:9092->9092/tcp   kafka               
+    459afcb7dfcf        confluent/zookeeper:latest         "/usr/local/bin/zk-do"   2 minutes ago       Up 2 minutes        0.0.0.0:2181->2181/tcp   zookeeper           
 
 
 ## Running on Multiple Remote Hosts and Clustering

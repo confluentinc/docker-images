@@ -87,3 +87,10 @@ Note that all services are built only using the *default Scala version*. When
 run as services, the Scala version should not matter. If you need a specific
 Scala version, use the corresponding `confluent/platform-$SCALA_VERSION` image
 as your `FROM` line in your derived Dockerfile.
+
+A second script, `push.sh`, will push the generated images to Docker
+Hub. First you'll need to be logged in:
+
+    docker login --username=yourhubusername --password=yourpassword --email=youremail@company.com
+
+then execute the script.

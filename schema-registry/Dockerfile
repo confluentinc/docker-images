@@ -8,11 +8,17 @@
 
 FROM confluent/platform
 
-RUN groupadd -r confluent && \
-    useradd -r -g confluent confluent && \
-    chown -R confluent:confluent /etc/schema-registry/schema-registry.properties
+ENV CONFLUENT_USER confluent
+ENV CONFLUENT_GROUP confluent
 
+COPY schema-registry-docker.sh /usr/local/bin/
+
+RUN groupadd -r ${CONFLUENT_GROUP} &&\
+    useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
+    chown -R ${CONFLUENT_USER}:${CONFLUENT_GROUP} /etc/schema-registry/schema-registry.properties /usr/local/bin/schema-registry-docker.sh &&\
+    chmod +x /usr/local/bin/schema-registry-docker.sh
+
+USER $CONFLUENT_USER
 EXPOSE 8081
-COPY schema-registry-docker.sh /
-CMD /schema-registry-docker.sh
-USER confluent
+
+ENTRYPOINT ["/usr/local/bin/schema-registry-docker.sh"]

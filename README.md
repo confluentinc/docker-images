@@ -22,15 +22,17 @@ looks like this:
     docker run -d --name rest-proxy -p 8082:8082 --link zookeeper:zookeeper \
         --link kafka:kafka --link schema-registry:schema-registry confluent/rest-proxy
 
-If you're using `boot2docker`, you'll need to adjust how you run Kafka:
+If you're using `docker-machine`, you'll need to adjust how you run Kafka:
 
-    # Get the IP address of the docker machine
-    DOCKER_MACHINE=`boot2docker ip`
+    # Get the IP address of the dockerhost machine
+    # If needed, replace `default` with your docker VM name
+    # Use `docker-machine ls` to list all your VMs
+    DOCKER_HOST=`docker-machine ip default`
 
     # Start Kafka and expose port 9092 for use by the host machine
     # Also configure the broker to use the docker machine's IP address
     docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper \
-        --env KAFKA_ADVERTISED_HOST_NAME=$DOCKER_MACHINE confluent/kafka
+        --env KAFKA_ADVERTISED_HOST_NAME=$DOCKER_HOST confluent/kafka
 
 If all goes well when you run the quickstart, `docker ps` should give you something that looks like this:
 

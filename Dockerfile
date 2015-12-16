@@ -26,3 +26,5 @@ RUN curl -SL http://packages.confluent.io/deb/${CONFLUENT_MAJOR_VERSION}/archive
 COPY etc /etc
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+EXPOSE 2181 9092 8081 8082

@@ -27,4 +27,33 @@ if [ "$1" = 'kafka-avro-console-producer' ]; then
         "$@"
 fi
 
+if [ "$1" = 'kafka-console-consumer' ]; then
+    shift
+    exec /usr/bin/kafka-console-consumer \
+        --zookeeper ${TOOLS_ZK_CONNECTION_STR} \
+        "$@"
+fi
+
+if [ "$1" = 'kafka-console-producer' ]; then
+    shift
+    exec /usr/bin/kafka-console-producer \
+        --broker-list ${TOOLS_KAFKA_CONNECTION_STR} \
+        "$@"
+fi
+
+if [ "$1" = 'kafka-topics' ]; then
+    shift
+    exec /usr/bin/kafka-topics \
+        --zookeeper ${TOOLS_ZK_CONNECTION_STR} \
+        "$@"
+fi
+
+if [ "$1" = 'kafka-consumer-offset-checker' ]; then
+    shift
+    exec /usr/bin/consumer-offset-checker \
+        --broker-list ${TOOLS_KAFKA_CONNECTION_STR} \
+        --zookeeper ${TOOLS_ZK_CONNECTION_STR} \
+        "$@"
+fi
+
 exec "$@"

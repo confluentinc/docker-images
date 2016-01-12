@@ -1,0 +1,35 @@
+kafka-zookeeper:
+  image: confluent/zookeeper
+  ports:
+    - 2181:2181
+
+kafka:
+  image: confluent/kafka
+  links:
+    - kafka-zookeeper:zookeeper
+  ports:
+    - 9092:9092
+
+schema-registry:
+  image: confluent/schema-registry
+  links:
+    - kafka-zookeeper:zookeeper
+    - kafka
+  ports:
+    - 8081:8081
+
+rest-proxy:
+  image: confluent/rest-proxy
+  links:
+    - kafka-zookeeper:zookeeper
+    - kafka
+    - schema-registry
+  ports:
+    - 8082:8082
+
+tools:
+  image: confluent/tools
+  links:
+    - kafka-zookeeper:zookeeper
+    - kafka
+    - schema-registry

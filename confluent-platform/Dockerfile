@@ -2,16 +2,21 @@
 # start up any particular service, just installs the platform. Other images
 # inherit from this image to start up a particular service.
 
-FROM debian:8.2
+FROM ubuntu:15.10
 
-ENV SCALA_VERSION="2.10.4"
-ENV JAVA_VERSION="7"
-ENV CONFLUENT_MAJOR_VERSION="1.0"
+ENV DEBIAN_FRONTEND noninteractive
+ENV SCALA_VERSION="2.11.7"
+ENV JAVA_VERSION="8"
+ENV CONFLUENT_MAJOR_VERSION="2.0"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y curl openjdk-${JAVA_VERSION}-jre-headless && \
-    curl -SL http://packages.confluent.io/deb/${CONFLUENT_MAJOR_VERSION}/archive.key | apt-key add - && \
-    echo "deb [arch=all] http://packages.confluent.io/deb/${CONFLUENT_MAJOR_VERSION} stable main" >> /etc/apt/sources.list && \
+    apt-get install -y build-essential scala software-properties-common wget && \
+    wget -qO - http://packages.confluent.io/deb/2.0/archive.key | apt-key add - && \
+    add-apt-repository "deb http://packages.confluent.io/deb/2.0 stable main" && \
     apt-get update && \
-    apt-get install -y confluent-platform-${SCALA_VERSION}
+    apt-get install -y confluent-platform-${SCALA_VERSION} && \
+    apt-add-repository -y ppa:webupd8team/java && \
+    apt-get update && \
+    echo oracle-java-8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
+    apt-get install -y oracle-java8-installer oracle-java8-set-default

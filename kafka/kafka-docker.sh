@@ -20,6 +20,7 @@ kafka_cfg_file="/etc/kafka/server.properties"
 : ${KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS:=6000}
 : ${KAFKA_AUTO_CREATE_TOPICS_ENABLE:=true}
 : ${KAFKA_DELETE_TOPIC_ENABLE:=true}
+: ${ZOOKEEPER_PORT=tcp://$KAFKA_ZOOKEEPER_CONNECT}
 
 export KAFKA_BROKER_ID
 export KAFKA_PORT
@@ -58,5 +59,7 @@ for var in $(env | grep -v '^KAFKA_LOGS' | grep -v '^KAFKA_CFG_' | grep '^KAFKA_
 done
 
 export KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/etc/kafka/log4j.properties"
+
+dockerize -wait $ZOOKEEPER_PORT
 
 exec /usr/bin/kafka-server-start ${kafka_cfg_file}

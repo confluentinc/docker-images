@@ -7,6 +7,9 @@ rp_cfg_file="/etc/kafka-rest/kafka-rest.properties"
 : ${RP_SCHEMA_REGISTRY_URL:=http://$SCHEMA_REGISTRY_PORT_8081_TCP_ADDR:$SCHEMA_REGISTRY_PORT_8081_TCP_PORT}
 : ${RP_ZOOKEEPER_CONNECT:=$ZOOKEEPER_PORT_2181_TCP_ADDR:$ZOOKEEPER_PORT_2181_TCP_PORT}
 : ${RP_DEBUG:=false}
+: ${SCHEMA_REGISTRY_PORT:=$RP_SCHEMA_REGISTRY_URL}
+: ${KAFKA_PORT:=tcp://$KAFKA_PORT_9092_TCP_ADDR:$KAFKA_PORT_9092_TCP_PORT}
+: ${ZOOKEEPER_PORT:=tcp://$RP_ZOOKEEPER_CONNECT}
 
 export RP_ID
 export RP_PORT
@@ -33,5 +36,7 @@ done
 
 # Fix for issue #77, PR #78: https://github.com/confluentinc/kafka-rest/pull/78/files
 sed -i 's/\"kafka\"//' /usr/bin/kafka-rest-run-class
+
+dockerize -wait $SCHEMA_REGISTRY_PORT -wait $KAFKA_PORT -wait $ZOOKEEPER_PORT
 
 exec /usr/bin/kafka-rest-start ${rp_cfg_file}

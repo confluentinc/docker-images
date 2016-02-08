@@ -7,6 +7,7 @@ FROM debian:8.2
 ENV SCALA_VERSION="2.10.4"
 ENV JAVA_VERSION="7"
 ENV CONFLUENT_MAJOR_VERSION="1.0"
+ENV DOCKERIZE_VERSION="v0.2.0"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -14,4 +15,7 @@ RUN apt-get update && \
     curl -SL http://packages.confluent.io/deb/${CONFLUENT_MAJOR_VERSION}/archive.key | apt-key add - && \
     echo "deb [arch=all] http://packages.confluent.io/deb/${CONFLUENT_MAJOR_VERSION} stable main" >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y confluent-platform-${SCALA_VERSION}
+    apt-get install -y confluent-platform-${SCALA_VERSION} &&\
+    curl -o /tmp/dockerize.tar.gz -sSL "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" &&\
+    tar -C /usr/local/bin -xzvf /tmp/dockerize.tar.gz &&\
+    rm -rf /tmp/dockerize.tar.gz

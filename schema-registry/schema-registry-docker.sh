@@ -6,6 +6,8 @@ sr_cfg_file="/etc/schema-registry/schema-registry.properties"
 : ${SCHEMA_REGISTRY_KAFKASTORE_TOPIC:=_schemas}
 : ${SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL:=$ZOOKEEPER_PORT_2181_TCP_ADDR:$ZOOKEEPER_PORT_2181_TCP_PORT}
 : ${SCHEMA_REGISTRY_DEBUG:=false}
+: ${KAFKA_PORT:=tcp://$KAFKA_PORT_9092_TCP_ADDR:$KAFKA_PORT_9092_TCP_PORT}
+: ${ZOOKEEPER_PORT:=tcp://$SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL}
 
 export SCHEMA_REGISTRY_PORT
 export SCHEMA_REGISTRY_KAFKASTORE_TOPIC
@@ -28,5 +30,7 @@ for var in $(env | grep '^SCHEMA_REGISTRY_' | sort); do
   value=$(echo $var | sed -r 's/.*=(.*)/\1/g')
   echo "${key}=${value}" >> ${sr_cfg_file}
 done
+
+dockerize -wait $ZOOKEEPER_PORT -wait $KAFKA_PORT
 
 exec /usr/bin/schema-registry-start ${sr_cfg_file}

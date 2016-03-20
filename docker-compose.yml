@@ -25,7 +25,7 @@ kafka:
   ports:
      - "9092:9092"
   environment:
-     KAFKA_ADVERTISED_HOST_NAME: 10.165.215.42
+     KAFKA_ADVERTISED_HOST_NAME: <YOUR_DOCKER_HOST>
      KAFKA_ADVERTISED_PORT: 9092
   links:
     - zookeeper

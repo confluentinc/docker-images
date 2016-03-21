@@ -6,7 +6,7 @@
 #   docker run -d --name rest-proxy --link zookeeper:zookeeper --link schema-registry:schema-registry \
 #       confluent/rest-proxy
 
-FROM confluent/platform
+FROM amikamsn/confluent-tools
 
 ENV CONFLUENT_USER confluent
 ENV CONFLUENT_GROUP confluent

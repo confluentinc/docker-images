@@ -4,7 +4,7 @@
 #   docker build -t confluent/zookeeper zookeeper
 #   docker run -d --name zookeeper confluent/zookeeper
 
-FROM confluent/platform
+FROM amikamsn/confluent-tools
 
 ENV ZK_DATA_DIR "/var/lib/zookeeper"
 ENV CONFLUENT_USER confluent

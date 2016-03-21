@@ -1,10 +1,10 @@
 zookeeper:
-  image: confluent/zookeeper
+  image: amikamsn/confluent-zookeeper
   ports:
     - "2181:2181"
 
 schema-registry:
-  image: confluent/schema-registry
+  image: amikamsn/confluent-schema-registry
   ports:
     - "8081:8081"
   links:
@@ -12,7 +12,7 @@ schema-registry:
     - kafka
 
 rest-proxy:
-  image: confluent/rest-proxy
+  image: amikamsn/confluent-rest-proxy
   ports:
     - "8082:8082"
   links:
@@ -21,7 +21,7 @@ rest-proxy:
     - schema-registry
 
 kafka:
-  image: confluent/kafka
+  image: amikamsn/confluent-kafka
   ports:
      - "9092:9092"
   environment:

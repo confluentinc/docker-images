@@ -4,9 +4,9 @@
 
 FROM debian:8.2
 
-ENV SCALA_VERSION="2.10.4"
+ENV SCALA_VERSION="2.11.7"
 ENV JAVA_VERSION="7"
-ENV CONFLUENT_MAJOR_VERSION="2.0.1"
+ENV CONFLUENT_MAJOR_VERSION="2.0"
 
 RUN apt-get update && \
     apt-get upgrade -y && \

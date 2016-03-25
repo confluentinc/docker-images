@@ -6,6 +6,8 @@
 
 FROM confluent/platform
 
+MAINTAINER contact@confluent.io
+
 ENV ZK_DATA_DIR "/var/lib/zookeeper"
 ENV CONFLUENT_USER confluent
 ENV CONFLUENT_GROUP confluent

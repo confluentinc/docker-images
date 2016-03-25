@@ -8,6 +8,8 @@
 
 FROM confluent/platform
 
+MAINTAINER contact@confluent.io
+
 ENV CONFLUENT_USER confluent
 ENV CONFLUENT_GROUP confluent
 

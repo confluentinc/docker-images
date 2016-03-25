@@ -8,6 +8,8 @@
 
 FROM confluent/platform
 
+MAINTAINER contact@confluent.io
+
 COPY confluent-tools.sh /
 ENTRYPOINT ["/confluent-tools.sh"]
 CMD ["kafka-avro-console-consumer"]

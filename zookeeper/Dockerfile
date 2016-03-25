@@ -23,7 +23,7 @@ VOLUME ["/var/log/zookeeper", "/var/lib/zookeeper"]
 
 #TODO Expose JMX
 # Expose client port (2188/tcp), peer connection port (2888/tcp), leader election port (3888/tcp)
-EXPOSE 2181 2888 3888
+EXPOSE [2181, 2888, 3888]
 
 USER confluent
 ENTRYPOINT ["/usr/local/bin/zk-docker.sh"]

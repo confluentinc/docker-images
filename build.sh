@@ -2,6 +2,13 @@
 
 . settings.sh
 
+if [ "$(uname)" = "Darwin" ]; then
+  SHA1='shasum'
+else
+  SHA1='sha1sum'
+fi
+
+
 set -ex
 
 if [ -z ${DOCKER_HOST+x} ];
@@ -34,7 +41,7 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
     fi
 
     cd "${STAGING_DIRECTORY}"
-    shasum -c "${TAR_NAME}.tar.gz.sha1.txt"
+    $SHA1 -c "${TAR_NAME}.tar.gz.sha1.txt"
 
     if [ $? -neq 0 ];
     then

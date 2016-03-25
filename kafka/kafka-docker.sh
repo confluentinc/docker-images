@@ -40,6 +40,8 @@ export KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS
 export KAFKA_AUTO_CREATE_TOPICS_ENABLE
 export KAFKA_DELETE_TOPIC_ENABLE
 
+
+
 # Download the config file, if given a URL
 if [ ! -z "$KAFKA_CFG_URL" ]; then
   echo "[kafka] Downloading Kafka config file from ${KAFKA_CFG_URL}"

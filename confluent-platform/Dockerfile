@@ -7,7 +7,8 @@ FROM java:8-jre
 ENV CONFLUENT_USER confluent
 ENV CONFLUENT_GROUP confluent
 
-RUN ["groupadd", "-r", "${CONFLUENT_GROUP}"]
-RUN ["useradd", "-r", "-g", "${CONFLUENT_GROUP}", "${CONFLUENT_USER}"]
+RUN ["groupadd", "-r", "confluent"]
+RUN ["useradd", "-r", "-g", "confluent", "confluent"]
 
-USER ${CONFLUENT_USER}
+
+

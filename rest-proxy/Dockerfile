@@ -15,8 +15,6 @@ COPY rest-proxy-docker.sh /usr/local/bin/
 RUN ["chown", "-R", "${CONFLUENT_USER}:${CONFLUENT_GROUP}", "/etc/kafka-rest", "/usr/local/bin/rest-proxy-docker.sh"]
 RUN ["chmod", "+x", "/usr/local/bin/rest-proxy-docker.sh"]
 
-USER ${CONFLUENT_USER}
-
 EXPOSE 8082
 
 CMD [ "/usr/local/bin/rest-proxy-docker.sh" ]

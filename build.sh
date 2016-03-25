@@ -59,7 +59,9 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
     tar xzvf "./${STAGING_DIRECTORY}/${TAR_NAME}.tar.gz" -C "./${STAGING_DIRECTORY}/${TAR_NAME}"
     TAR_ROOT="$(find ${STAGING_DIRECTORY}/${TAR_NAME} -type d -maxdepth 1 -mindepth 1)"
 
-    echo "ADD ${TAR_ROOT} /" >> "$DOCKER_FILE"
+    echo "ADD ${TAR_ROOT}/bin/ /usr/bin/" >> "$DOCKER_FILE"
+    echo "ADD ${TAR_ROOT}/etc/ /etc/" >> "$DOCKER_FILE"
+    echo "ADD ${TAR_ROOT}/share/ /usr/share/" >> "$DOCKER_FILE"
 
     TAG="confluent/platform-${SCALA_VERSION}:${CONFLUENT_PLATFORM_VERSION}"
     TAGS="${TAGS} ${TAG}"

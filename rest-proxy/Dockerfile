@@ -10,15 +10,10 @@ FROM confluent/platform
 
 MAINTAINER contact@confluent.io
 
-ENV CONFLUENT_USER confluent
-ENV CONFLUENT_GROUP confluent
-
 COPY rest-proxy-docker.sh /usr/local/bin/
 
-RUN groupadd -r ${CONFLUENT_GROUP} &&\
-    useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
-    chown -R ${CONFLUENT_USER}:${CONFLUENT_GROUP} /etc/kafka-rest /usr/local/bin/rest-proxy-docker.sh &&\
-    chmod +x /usr/local/bin/rest-proxy-docker.sh
+RUN ["chown", "-R", "${CONFLUENT_USER}:${CONFLUENT_GROUP}", "/etc/kafka-rest", "/usr/local/bin/rest-proxy-docker.sh"]
+RUN ["chmod", "+x", "/usr/local/bin/rest-proxy-docker.sh"]
 
 USER ${CONFLUENT_USER}
 

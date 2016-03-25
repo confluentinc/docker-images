@@ -10,6 +10,7 @@ FROM confluent/platform
 
 MAINTAINER contact@confluent.io
 
-COPY confluent-tools.sh /
-ENTRYPOINT ["/confluent-tools.sh"]
-CMD ["kafka-avro-console-consumer"]
+WORKDIR /usr/bin
+
+ADD confluent-tools.sh /usr/bin/confluent-tools
+CMD ["confluent-tools"]

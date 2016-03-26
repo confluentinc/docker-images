@@ -45,7 +45,7 @@ echo "Container was launched with ${TOTAL_MEMORY}k of memory"
 
 if [ -z ${KAFKA_HEAP_OPTS+x} ]; then
   HEAP_SIZE=`awk "BEGIN { rounded = sprintf(\"%.0f\", ${TOTAL_MEMORY} * 0.80); print rounded }"`
-  KAFKA_HEAP_OPTS="-Xmx${HEAP_SIZE}K"
+  export KAFKA_HEAP_OPTS="-Xmx${HEAP_SIZE}K"
   echo "Set KAFKA_HEAP_OPTS to ${KAFKA_HEAP_OPTS}"
 fi
 

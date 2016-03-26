@@ -20,6 +20,7 @@ KAFKA_CFG_FILE="/etc/kafka/server.properties"
 : ${KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS:=6000}
 : ${KAFKA_AUTO_CREATE_TOPICS_ENABLE:=true}
 : ${KAFKA_DELETE_TOPIC_ENABLE:=true}
+: ${KAFKA_HEAP_OPTS:="-Xmx200M"}
 
 export KAFKA_BROKER_ID
 export KAFKA_PORT
@@ -39,15 +40,7 @@ export KAFKA_ZOOKEEPER_CONNECT
 export KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS
 export KAFKA_AUTO_CREATE_TOPICS_ENABLE
 export KAFKA_DELETE_TOPIC_ENABLE
-
-TOTAL_MEMORY=`grep MemTotal /proc/meminfo | awk '{print $2}'`
-echo "Container was launched with ${TOTAL_MEMORY}k of memory"
-
-if [ -z ${KAFKA_HEAP_OPTS+x} ]; then
-  HEAP_SIZE=`awk "BEGIN { rounded = sprintf(\"%.0f\", ${TOTAL_MEMORY} * 0.80); print rounded }"`
-  export KAFKA_HEAP_OPTS="-Xmx${HEAP_SIZE}K"
-  echo "Set KAFKA_HEAP_OPTS to ${KAFKA_HEAP_OPTS}"
-fi
+export KAFKA_HEAP_OPTS
 
 # Download the config file, if given a URL
 if [ ! -z "$KAFKA_CFG_URL" ]; then

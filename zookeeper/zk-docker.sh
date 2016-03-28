@@ -6,22 +6,22 @@ ZK_CFG_FILE="/etc/kafka/zookeeper.properties"
 : ${zk_tickTime:=2000}
 : ${zk_initLimit:=5}
 : ${zk_syncLimit:=2}
-: ${zk_dataDir:="/var/lib/zookeeper"}
 : ${zk_clientPort:=2181}
 : ${zk_maxClientCnxns:=0}
+
+export zk_dataDir='/var/lib/zookeeper'
 
 export zk_id
 export zk_tickTime
 export zk_initLimit
 export zk_syncLimit
-export zk_dataDir
 export zk_clientPort
 export zk_maxClientCnxns
 
 # Download the config file, if given a URL
 if [ ! -z "$zk_cfg_url" ]; then
   echo "[zk] Downloading zk config file from ${zk_cfg_url}"
-  curl --location --silent --insecure --output ${zk_cfg_file} ${zk_cfg_url}
+  curl --location --silent --insecure --output ${ZK_CFG_FILE} ${zk_cfg_url}
   if [ $? -ne 0 ]; then
     echo "[zk] Failed to download ${zk_cfg_url} exiting."
     exit 1

@@ -1,7 +1,11 @@
 NAME=zookeeper
-VERSION=1.0
+VERSION=latest
 RELEASE:=$(shell date -u +%Y%m%d%H%M)
 BUILDDIR=.build
+
+ifeq ($(NAME), kafka)
+VERSION=latest
+endif
 
 all: rpm
 
@@ -10,7 +14,7 @@ clean:
 
 rpm:
 	docker pull mickep76/centos-golang:latest
-	docker run --rm -it -v "$$PWD":/build -w /build mickep76/centos-golang:latest make build-rpm
+	docker run --rm -it -v "$$PWD":/build -w /build mickep76/centos-golang:latest make NAME=${NAME} build-rpm
 
 build-rpm:
 	mkdir -p ${BUILDDIR}/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}

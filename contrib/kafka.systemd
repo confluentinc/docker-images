@@ -1,0 +1,20 @@
+# /etc/systemd/system/kafka.service
+#
+
+[Unit]
+Description=Kafka
+Requires=zookeeper.service
+After=zookeeper.service
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/kafka
+Restart=on-failure
+RestartSec=10
+ExecStart=/usr/bin/docker run --name kafka\${ID} -e KAFKA_BROKER_ID=\${ID} \
+    -e KAFKA_ZOOKEEPER_CONNECT=\${IP1}:2181,\${IP2}:2181,\${IP3}:2181 \
+    -p 9092:9092 confluent/kafka:\${VERSION}
+ExecStop=/usr/bin/docker stop kafka\${ID}
+ExecStop=/usr/bin/docker rm kafka\${ID}
+
+[Install]
+WantedBy=multi-user.target

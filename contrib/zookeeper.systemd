@@ -1,0 +1,23 @@
+# /etc/systemd/system/zookeeper.service
+#
+
+[Unit]
+Description=Zookeeper
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/zookeeper
+Restart=on-failure
+RestartSec=10
+ExecStart=/usr/bin/docker run --name zookeeper\${ID} -e zk_id=\${ID} \
+    -e zk_server.1=\${IP1}:2888:3888 \
+    -e zk_server.2=\${IP2}:2888:3888 \
+    -e zk_server.3=\${IP3}:2888:3888 \
+    -p 2181:2181 -p 2888:2888 -p 3888:3888 \
+    confluent/zookeeper:\${VERSION}
+ExecStop=/usr/bin/docker stop zookeeper\${ID}
+ExecStop=/usr/bin/docker rm zookeeper\${ID}
+
+[Install]
+WantedBy=multi-user.target

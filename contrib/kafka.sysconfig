@@ -1,0 +1,22 @@
+# /etc/sysconfig/kafka
+#
+
+# Kafka instance ID
+#
+# ID=1
+
+# First Zookeeper instance IP
+#
+# IP1=192.168.0.1
+
+# Second Zookeeper instance IP
+#
+# IP2=192.168.0.2
+
+# Third Zookeeper instnace IP
+#
+# IP3=192.168.0.3
+
+# Docker image version
+#
+# VERSION=latest

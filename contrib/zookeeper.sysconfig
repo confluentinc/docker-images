@@ -1,0 +1,25 @@
+# /etc/sysconfig/zookeeper
+#
+
+# Zookeeper instance ID
+#
+# ID=1
+
+# First Zookeeper instance IP
+# If you're not using an overlay network you need to bind to all interfaces i.e. "0.0.0.0"
+#
+# IP1=0.0.0.0
+
+# Second Zookeeper instance IP
+# If you're not using an overlay network you need to bind to all interfaces i.e. "0.0.0.0"
+#
+# IP2=192.168.0.2
+
+# Third Zookeeper instance IP
+# If you're not using an overlay network you need to bind to all interfaces i.e. "0.0.0.0"
+#
+# IP3=192.168.0.3
+
+# Docker image version
+#
+# VERSION=latest

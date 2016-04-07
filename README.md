@@ -65,6 +65,60 @@ The images support using environment variables via the Docker `-e | --env` flags
 
 You can also download your own file, with similar variable substitution as shown above. To download your own file use the prefixes as shown above, with the special variable `CFG_URL` appended. For example, to download your own ZK configuration file and leverage the `ZOOKEEPER_` variable substitution you could do `docker run --name zk -e ZOOKEEPER_CFG_URL=http://myurl/zookeeper.properties ZOOKEEPER_id=1 -e ZOOKEEPER_maxClientCnxns=20 confluent/zookeeper`.
 
+## Potential Caveats
+
+Running Kafka in Docker does have some potential Caveats. 
+
+  - Cluster metadata will use the `advertised.listeners` configuration setting. This defaults to the hostname of the machine it's running in.
+  
+  - NAT networking requires proper advertisement of the host endpoints. This requires a 1 to 1 port mapping such as `-p 9092:9092`, changing the `advertised.listeners` to match the docker port mapping, or `--net=host`. Using host networking is recommended. 
+
+## Docker Compose 
+
+The [examples/fullstack](examples/fullstack) directory contains a Docker compose script with a full Confluent stack. This include Zookeeper, a Kafka Broker, the rest proxy, and the schema registry.
+
+### Setup your environment 
+
+This command will create a docker machine called confluent with a hostname of confluent. Note you can change the driver to whatever virtualization platform you currently use.
+
+```
+docker-machine create --driver virtualbox confluent
+```
+
+This command will setup your shell to use the confluent virtual machine as your docker host.
+
+```
+eval $(docker-machine env confluent)
+```
+
+### Local Host entries
+
+A Kafka broker advertises the hostname of the machine it's running on. This requires the hostname to be resolvable on the client machine. You will need to add a host entry for your docker machine to your hosts file.
+
+The command `docker-machine ip <machine name>` will return the ip address of your docker machine.
+
+```
+> docker-machine ip confluent
+192.168.99.100
+```
+
+Edit your hosts file and add a host entry for the docker machine.
+
+```
+192.168.99.100  confluent
+```
+
+### Launch Images
+
+```
+cd examples/fullstack
+docker-compose up
+```
+
+### Connecting 
+
+Now all of your services will be available at the host `confluent`.
+
 
 Building Images
 ---------------

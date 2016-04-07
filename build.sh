@@ -112,7 +112,7 @@ if [ "\$1" = "alias" ]; then
 EOL
 
 while read COMMAND; do
-  echo "    echo alias ${COMMAND}=\'docker run --rm \"confluent/tools:${CONFLUENT_PLATFORM_VERSION}\" ${COMMAND}\'" >> ./tools/confluent-tools.sh
+  echo "    echo alias ${COMMAND}=\'docker run --rm --interactive --net=host \"confluent/tools:${CONFLUENT_PLATFORM_VERSION}\" ${COMMAND}\'" >> ./tools/confluent-tools.sh
 done <$TOOLS_COMMAND_LIST
 
 echo else >> ./tools/confluent-tools.sh

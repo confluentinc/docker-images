@@ -31,6 +31,6 @@ fi
 # Set Zookeeper ID
 echo $zk_id > $zk_dataDir/myid
 
-/usr/bin/docker-edit-properties --file ${ZK_CFG_FILE} --include 'ZK_(.*)' --include 'zk_(.*)' --exclude '^zk_cfg_'
+/usr/bin/docker-edit-properties --preserve-case --file ${ZK_CFG_FILE} --include 'ZK_(.*)' --include 'zk_(.*)' --exclude '^zk_cfg_'
 
 exec /usr/bin/zookeeper-server-start ${ZK_CFG_FILE}

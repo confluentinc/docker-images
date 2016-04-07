@@ -24,6 +24,7 @@ public class PropertyEditor {
   File targetFile;
   List<Pattern> includePatterns=new ArrayList<>();
   List<Pattern> excludePatterns=new ArrayList<>();
+  boolean preserveCase=false;
 
   public File getTargetFile() {
     return targetFile;
@@ -47,6 +48,14 @@ public class PropertyEditor {
 
   public void setExcludePatterns(List<Pattern> excludePatterns) {
     this.excludePatterns = excludePatterns;
+  }
+
+  public void setPreserveCase(boolean preserveCase) {
+    this.preserveCase = preserveCase;
+  }
+
+  public boolean getPreserveCase() {
+    return preserveCase;
   }
 
   Map<String, String> findOverriddenValues(Map<String, String> environmentVariables) {
@@ -89,9 +98,15 @@ public class PropertyEditor {
         continue;
       }
 
+      if(matcher.groupCount()!=1){
+        throw new IllegalStateException("Include pattern must return capture group 1. Pattern: " + matcher.pattern().pattern());
+      }
+
       String propertyName=matcher.group(1);
       propertyName=propertyName.replace('_', '.');
-      propertyName=propertyName.toLowerCase();
+      if(!preserveCase){
+        propertyName=propertyName.toLowerCase();
+      }
 
       if(log.isInfoEnabled()){
         log.info("Overriding value for {} with value from environment variable {}", propertyName, env.getKey());
@@ -163,6 +178,7 @@ public class PropertyEditor {
     parser.accepts("file", "Absolute path to the properties file to edit.").withRequiredArg().ofType(File.class);
     parser.accepts("include", "Regular expression for environment variables to include. Must contain a capture group of 1 for the property name.").withRequiredArg();
     parser.accepts("exclude", "Regular expression for environment variables to exclude. Excludes execute after includes.").withRequiredArg();
+    parser.accepts("preserve-case", "Flag to determine if the case of the environment variable should be preserved.");
 
     OptionSet options = parser.parse(args);
 
@@ -182,6 +198,11 @@ public class PropertyEditor {
     List<Pattern> excludes = createPatterns(options, "exclude");
     editor.setIncludePatterns(includes);
     editor.setExcludePatterns(excludes);
+
+    if(options.has("preserve-case")) {
+      editor.setPreserveCase(true);
+    }
+
     return editor;
   }
 

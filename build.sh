@@ -14,15 +14,25 @@ set -ex
 if [ -z ${DOCKER_HOST+x} ];
 then
   echo "DOCKER_HOST must be set before running this script.";
+  exit 1
 fi
+
+mvn clean package
 
 TAGS=""
 
-STAGING_DIRECTORY='./staging'
+STAGING_DIRECTORY='./target-docker'
+
+DOCKER_UTILS_DIRECTORY="$(find target -name 'docker-utils*-package' -type d -maxdepth 1 -mindepth 1)"
 
 TOOLS_COMMAND_LIST="${STAGING_DIRECTORY}/commands"
 
 find "${STAGING_DIRECTORY}" -type d -maxdepth 1 -mindepth 1| xargs rm -rf
+
+if [ ! -d "./${STAGING_DIRECTORY}" ];
+then
+  mkdir -p "./${STAGING_DIRECTORY}"
+fi
 
 for SCALA_VERSION in ${SCALA_VERSIONS}; do
     echo "Building confluent-platform-${SCALA_VERSION}"
@@ -55,7 +65,7 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
 
     if [ ! -d "./${STAGING_DIRECTORY}/${TAR_NAME}" ];
     then
-      mkdir "./${STAGING_DIRECTORY}/${TAR_NAME}"
+      mkdir -p "./${STAGING_DIRECTORY}/${TAR_NAME}"
     fi
 
     tar xzvf "./${STAGING_DIRECTORY}/${TAR_NAME}.tar.gz" -C "./${STAGING_DIRECTORY}/${TAR_NAME}"
@@ -63,9 +73,23 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
 
     ls -1 "${TAR_ROOT}/bin" | grep -v windows > "${TOOLS_COMMAND_LIST}"
 
+    # Setup default configurations for kafka broker
+    SERVER_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'server.properties'`
+    cp ./kafka/server.properties "${SERVER_PROPERTIES}"
+
+    # Setup default configurations for rest-proxy
+    KAFKA_REST_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'kafka-rest.properties'`
+    cp ./rest-proxy/kafka-rest.properties "${KAFKA_REST_PROPERTIES}"
+
+    # Setup default configurations for schema-registry
+    SCHEMA_REGISTRY_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'schema-registry.properties'`
+    cp ./schema-registry/schema-registry.properties "${SCHEMA_REGISTRY_PROPERTIES}"
+
     echo "ADD ${TAR_ROOT}/bin/ /usr/bin/" >> "$DOCKER_FILE"
     echo "ADD ${TAR_ROOT}/etc/ /etc/" >> "$DOCKER_FILE"
     echo "ADD ${TAR_ROOT}/share/ /usr/share/" >> "$DOCKER_FILE"
+    echo "ADD ${DOCKER_UTILS_DIRECTORY}/bin/ /usr/bin/" >> "$DOCKER_FILE"
+    echo "ADD ${DOCKER_UTILS_DIRECTORY}/share/ /usr/share/" >> "$DOCKER_FILE"
 
     TAG="confluent/platform-${SCALA_VERSION}:${CONFLUENT_PLATFORM_VERSION}"
     TAGS="${TAGS} ${TAG}"
@@ -99,7 +123,6 @@ done <$TOOLS_COMMAND_LIST
 
 echo fi >> ./tools/confluent-tools.sh
 # end generate tools banner
-
 
 IMAGES="zookeeper kafka schema-registry rest-proxy tools"
 

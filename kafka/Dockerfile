@@ -14,11 +14,11 @@ ENV KAFKA_LOG_DIRS "/var/lib/kafka"
 
 ADD kafka-docker.sh /usr/local/bin/
 
-RUN ["mkdir", "-p", "/var/lib/kafka", "/var/log/kafka"]
+RUN ["mkdir", "-p", "/var/lib/kafka", "/var/log/kafka", "/etc/security"]
 RUN ["chown", "-R", "confluent:confluent", "/var/lib/kafka", "/var/log/kafka", "/etc/kafka/server.properties"]
 RUN ["chmod", "+x", "/usr/local/bin/kafka-docker.sh"]
 
-VOLUME ["/var/lib/kafka", "/var/log/kafka"]
+VOLUME ["/var/lib/kafka", "/var/log/kafka", "/etc/security"]
 
 #TODO Update the ports that are exposed.
 #TODO Add support to expose JMX

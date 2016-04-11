@@ -7,22 +7,22 @@
 
 FROM confluent/platform
 
-ENV CONFLUENT_USER confluent
-ENV CONFLUENT_GROUP confluent
-ENV KAFKA_LOGS "/var/log/kafka"
+MAINTAINER contact@confluent.io
+
+ENV LOG_DIR "/var/log/kafka"
 ENV KAFKA_LOG_DIRS "/var/lib/kafka"
 
-COPY kafka-docker.sh /usr/local/bin/
+ADD kafka-docker.sh /usr/local/bin/
 
-RUN groupadd -r ${CONFLUENT_GROUP} &&\
-    useradd -r -g ${CONFLUENT_GROUP} ${CONFLUENT_USER} &&\
-    mkdir -p ${KAFKA_LOG_DIRS} ${KAFKA_LOGS} &&\
-    chown -R ${CONFLUENT_USER}:${CONFLUENT_GROUP} ${KAFKA_LOG_DIRS} ${KAFKA_LOGS} /etc/kafka/server.properties /usr/local/bin/kafka-docker.sh &&\
-    chmod +x /usr/local/bin/kafka-docker.sh
+RUN ["mkdir", "-p", "/var/lib/kafka", "/var/log/kafka", "/etc/security"]
+RUN ["chown", "-R", "confluent:confluent", "/var/lib/kafka", "/var/log/kafka", "/etc/kafka/server.properties"]
+RUN ["chmod", "+x", "/usr/local/bin/kafka-docker.sh"]
 
+VOLUME ["/var/lib/kafka", "/var/log/kafka", "/etc/security"]
 
-USER ${CONFLUENT_USER}
-VOLUME ["${KAFKA_LOG_DIRS}", "${KAFKA_LOGS}"]
+#TODO Update the ports that are exposed.
+#TODO Add support to expose JMX
 EXPOSE 9092
 
+USER confluent
 ENTRYPOINT ["/usr/local/bin/kafka-docker.sh"]

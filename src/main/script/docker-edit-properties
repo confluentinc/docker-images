@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export CLASSPATH="$(find /usr/share/java/docker-utils -type f -name '*.jar' | tr '\n' ':')"
+
+java -classpath $CLASSPATH io.confluent.docker.util.PropertyEditor $@

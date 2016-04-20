@@ -124,14 +124,36 @@ done <$TOOLS_COMMAND_LIST
 echo fi >> ./tools/confluent-tools.sh
 # end generate tools banner
 
-IMAGES="zookeeper kafka schema-registry rest-proxy tools"
 
-for IMAGE in ${IMAGES}; do
+
+CONFLUENT_IMAGES="schema-registry rest-proxy"
+
+for IMAGE in ${CONFLUENT_IMAGES}; do
   docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}" "${IMAGE}/"
   TAGS="${TAGS} confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}"
   docker tag $DOCKER_TAG_OPTS "confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}" "confluent/${IMAGE}:latest"
   TAGS="${TAGS} confluent/${IMAGE}:latest"
 done
+
+
+KAFKA_IMAGES="kafka tools"
+
+for IMAGE in ${KAFKA_IMAGES}; do
+  docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${KAFKA_VERSION}" "${IMAGE}/"
+  TAGS="${TAGS} confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}"
+  docker tag $DOCKER_TAG_OPTS "confluent/${IMAGE}:${KAFKA_VERSION}" "confluent/${IMAGE}:latest"
+  TAGS="${TAGS} confluent/${IMAGE}:latest"
+done
+
+ZOOKEEPER_IMAGES="zookeeper"
+
+for IMAGE in ${ZOOKEEPER_IMAGES}; do
+  docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${ZOOKEEPER_VERSION}" "${IMAGE}/"
+  TAGS="${TAGS} confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}"
+  docker tag $DOCKER_TAG_OPTS "confluent/${IMAGE}:${ZOOKEEPER_VERSION}" "confluent/${IMAGE}:latest"
+  TAGS="${TAGS} confluent/${IMAGE}:latest"
+done
+
 
 for TAG in ${TAGS}; do
   if [ "${PUSH_TO_DOCKER_HUB}" = "yes" ]; then

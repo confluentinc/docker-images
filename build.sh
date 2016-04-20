@@ -71,6 +71,8 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
     tar xzvf "./${STAGING_DIRECTORY}/${TAR_NAME}.tar.gz" -C "./${STAGING_DIRECTORY}/${TAR_NAME}"
     TAR_ROOT="$(find ${STAGING_DIRECTORY}/${TAR_NAME} -type d -maxdepth 1 -mindepth 1)"
 
+    find "${TAR_ROOT}" -name camus | xargs rm -rf
+
     ls -1 "${TAR_ROOT}/bin" | grep -v windows > "${TOOLS_COMMAND_LIST}"
 
     # Setup default configurations for kafka broker

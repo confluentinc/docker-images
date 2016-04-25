@@ -5,6 +5,9 @@ Experimental docker images for running the
 [Confluent Platform](http://confluent.io/docs/current/index.html).
 These images are currently intended for development use, not for production use.
 
+
+## Quickstart
+
 The Docker version of the [Confluent Quickstart](http://confluent.io/docs/current/quickstart.html)
 looks like this:
 

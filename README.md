@@ -64,7 +64,7 @@ The images support using environment variables via the Docker `-e | --env` flags
 
   - For the Schema Registry image use variables prefixed with `SCHEMA_REGISTRY_` with an underscore (`_`) separating each word instead of periods. As an example, to set `kafkastore.topic` and `debug` you'd run `docker run --name schema-registry --link zookeeper:zookeeer --link kafka:kafka -e SCHEMA_REGISTRY_KAFKASTORE_TOPIC=_schemas -e SCHEMA_REGISTRY_DEBUG=true confluent/schema-registry`.
 
-  - For the Kafka REST Proxy image use variables prefixed with `REST_PROXY_` with an underscore (`_`) separating each word instead of periods. As an example, to set `id` and `zookeeper_connect` you'd run `docker run --name rest-proxy --link schema-registry:schema-registry --link zookeeper:zookeeer -e REST_PROXY_ID=2 -e REST_PROXY_ZOOKEEPER_CONNECT=192.168.1.101:2182 confluent/rest-proxy`.
+  - For the Kafka REST Proxy image use variables prefixed with `KAFKA_REST_` with an underscore (`_`) separating each word instead of periods. As an example, to set `id` and `zookeeper_connect` you'd run `docker run --name rest-proxy --link schema-registry:schema-registry --link zookeeper:zookeeer -e KAFKA_REST_ID=2 -e KAFKA_REST_ZOOKEEPER_CONNECT=192.168.1.101:2182 confluent/rest-proxy`.
 
 You can also download your own file, with similar variable substitution as shown above. To download your own file use the prefixes as shown above, with the special variable `CFG_URL` appended. For example, to download your own ZK configuration file and leverage the `ZOOKEEPER_` variable substitution you could do `docker run --name zk -e ZOOKEEPER_CFG_URL=http://myurl/zookeeper.properties ZOOKEEPER_id=1 -e ZOOKEEPER_maxClientCnxns=20 confluent/zookeeper`.
 

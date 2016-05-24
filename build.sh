@@ -45,11 +45,11 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
     DOWNLOAD_TAR_URL="${PACKAGE_URL}/${TAR_NAME}.tar.gz"
     DOWNLOAD_TAR_PATH="${STAGING_DIRECTORY}/${TAR_NAME}.tar.gz"
     DOWNLOAD_CHECKSUM_PATH="${STAGING_DIRECTORY}/${TAR_NAME}.tar.gz.sha1.txt"
-    curl -o "${DOWNLOAD_TAR_PATH}.sha1.txt" "${DOWNLOAD_TAR_URL}.sha1.txt"
+    curl -Lo "${DOWNLOAD_TAR_PATH}.sha1.txt" "${DOWNLOAD_TAR_URL}.sha1.txt"
 
     if [ ! -f $DOWNLOAD_TAR_PATH ];
     then
-      curl -o "${DOWNLOAD_TAR_PATH}" "${DOWNLOAD_TAR_URL}"
+      curl -Lo "${DOWNLOAD_TAR_PATH}" "${DOWNLOAD_TAR_URL}"
     fi
 
     cd "${STAGING_DIRECTORY}"
@@ -140,7 +140,7 @@ KAFKA_IMAGES="kafka tools"
 
 for IMAGE in ${KAFKA_IMAGES}; do
   docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${KAFKA_VERSION}" "${IMAGE}/"
-  TAGS="${TAGS} confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}"
+  TAGS="${TAGS} confluent/${IMAGE}:${KAFKA_VERSION}"
   docker tag $DOCKER_TAG_OPTS "confluent/${IMAGE}:${KAFKA_VERSION}" "confluent/${IMAGE}:latest"
   TAGS="${TAGS} confluent/${IMAGE}:latest"
 done
@@ -149,7 +149,7 @@ ZOOKEEPER_IMAGES="zookeeper"
 
 for IMAGE in ${ZOOKEEPER_IMAGES}; do
   docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${ZOOKEEPER_VERSION}" "${IMAGE}/"
-  TAGS="${TAGS} confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}"
+  TAGS="${TAGS} confluent/${IMAGE}:${ZOOKEEPER_VERSION}"
   docker tag $DOCKER_TAG_OPTS "confluent/${IMAGE}:${ZOOKEEPER_VERSION}" "confluent/${IMAGE}:latest"
   TAGS="${TAGS} confluent/${IMAGE}:latest"
 done

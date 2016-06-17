@@ -2,6 +2,8 @@
 
 RP_CFG_FILE="/etc/kafka-rest/kafka-rest.properties"
 
+: ${WAIT_FOR:="echo waiting for other services; sleep 1"}
+
 # Download the config file, if given a URL
 if [ ! -z "$RP_CFG_URL" ]; then
   echo "[RP] Downloading RP config file from ${RP_CFG_URL}"
@@ -17,7 +19,5 @@ fi
 # Fix for issue #77, PR #78: https://github.com/confluentinc/kafka-rest/pull/78/files
 sed -i 's/\"kafka\"//' /usr/bin/kafka-rest-run-class
 
-# HACK This is a total hack to get around launching several containers at once. This give zookeeper and kafka time to start.
-sleep 10
-
+eval $WAIT_FOR
 exec /usr/bin/kafka-rest-start ${RP_CFG_FILE}

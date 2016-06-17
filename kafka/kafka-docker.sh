@@ -3,6 +3,7 @@
 KAFKA_CFG_FILE="/etc/kafka/server.properties"
 
 : ${KAFKA_BROKER_ID:=0}
+: ${WAIT_FOR:="echo waiting for other services; sleep 1"}
 
 # Force the data directory and log paths to our volumes.
 export KAFKA_LOG_DIRS='/var/lib/kafka'
@@ -22,4 +23,5 @@ fi
 
 export KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/etc/kafka/log4j.properties"
 
+eval $WAIT_FOR
 exec /usr/bin/kafka-server-start ${KAFKA_CFG_FILE}

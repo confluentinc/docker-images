@@ -6,9 +6,12 @@ FROM java:8-jre
 
 ENV CONFLUENT_USER confluent
 ENV CONFLUENT_GROUP confluent
+ENV DOCKERIZE_VERSION v0.2.0
+ENV DOCKERIZE_URL https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 RUN ["groupadd", "-r", "confluent"]
 RUN ["useradd", "-r", "-g", "confluent", "confluent"]
 
-
-
+RUN wget -O /tmp/dockerize.tar.gz ${DOCKERIZE_URL}
+RUN tar -C /usr/local/bin -xzvf /tmp/dockerize.tar.gz
+RUN rm -rf /tmp/dockerize.tar.gz

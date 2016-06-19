@@ -62,9 +62,11 @@ The images support using environment variables via the Docker `-e | --env` flags
 
   - For the Kafka image use variables prefixed with `KAFKA_` with an underscore (`_`) separating each word instead of periods. As an example, to set `broker.id` and `offsets.storage` you'd run `docker run --name kafka --link zookeeper:zookeeper -e KAFKA_BROKER_ID=2 -e KAFKA_OFFSETS_STORAGE=kafka confluent/kafka`.
 
-  - For the Schema Registry image use variables prefixed with `SCHEMA_REGISTRY_` with an underscore (`_`) separating each word instead of periods. As an example, to set `kafkastore.topic` and `debug` you'd run `docker run --name schema-registry --link zookeeper:zookeeer --link kafka:kafka -e SCHEMA_REGISTRY_KAFKASTORE_TOPIC=_schemas -e SCHEMA_REGISTRY_DEBUG=true confluent/schema-registry`.
+  - For the Schema Registry image use variables prefixed with `SCHEMA_REGISTRY_` (or `SR_`) with an underscore (`_`) separating each word instead of periods. As an example, to set `kafkastore.topic` and `debug` you'd run `docker run --name schema-registry --link zookeeper:zookeeer --link kafka:kafka -e SCHEMA_REGISTRY_KAFKASTORE_TOPIC=_schemas -e SCHEMA_REGISTRY_DEBUG=true confluent/schema-registry`.
 
-  - For the Kafka REST Proxy image use variables prefixed with `REST_PROXY_` with an underscore (`_`) separating each word instead of periods. As an example, to set `id` and `zookeeper_connect` you'd run `docker run --name rest-proxy --link schema-registry:schema-registry --link zookeeper:zookeeer -e REST_PROXY_ID=2 -e REST_PROXY_ZOOKEEPER_CONNECT=192.168.1.101:2182 confluent/rest-proxy`.
+  - For the Kafka REST Proxy image use variables prefixed with `KAFKA_REST_` (or `RP_`) with an underscore (`_`) separating each word instead of periods. As an example, to set `id` and `zookeeper_connect` you'd run `docker run --name rest-proxy --link schema-registry:schema-registry --link zookeeper:zookeeer -e KAFKA_REST_ID=2 -e KAFKA_REST_ZOOKEEPER_CONNECT=192.168.1.101:2182 confluent/rest-proxy`.
+  
+  - For the Confluent Control Center image use variables prefixed with `CONTROL_CENTER_` (or `CC_`) with an underscore (`_`) separating each word instead of periods. As an example, to set `name` and `zookeeper_connect` you'd run `docker run --name control-center -e CC_CONFLUENT_CONTROLCENTER_NAME=_docker-cc -e CC_ZOOKEEPER_CONNECT=192.168.1.101:2181 confluent/control-center`.
 
 You can also download your own file, with similar variable substitution as shown above. To download your own file use the prefixes as shown above, with the special variable `CFG_URL` appended. For example, to download your own ZK configuration file and leverage the `ZOOKEEPER_` variable substitution you could do `docker run --name zk -e ZOOKEEPER_CFG_URL=http://myurl/zookeeper.properties ZOOKEEPER_id=1 -e ZOOKEEPER_maxClientCnxns=20 confluent/zookeeper`.
 
@@ -137,17 +139,25 @@ images. This includes:
 * `confluent/kafka` - starts Kafka on 9092.
 * `confluent/schema-registry` - starts the Schema Registry on 8081.
 * `confluent/rest-proxy` - starts the Kafka REST Proxy on 8082.
+* `confluent/control-center` - starts the Confluent Control Center on 9021.
 * `confluent-tools` - provides tools with a few links to other containers for
   commonly used tools.
+
+The `settings.sh` script defines the variables used to control the
+build process.   It is the `build.sh` script that takes the properties
+files in our image directories and deploys them into the Confluent
+install directory before creating the container.  For that reason,
+simple "docker build -t" commands will not generate a container with
+updated properties file.
 
 Note that all services are built only using the *default Scala version*. When
 run as services, the Scala version should not matter. If you need a specific
 Scala version, use the corresponding `confluent/platform-$SCALA_VERSION` image
 as your `FROM` line in your derived Dockerfile.
 
-A second script, `push.sh`, will push the generated images to Docker
-Hub. First you'll need to be logged in:
+If "PUSH_TO_DOCKER_HUB" is set to YES in settings.sh, the build.sh 
+script will upload the generated images to the Docker hub.   You will
+need to be logged in to the hub itself for the upload to succeed:
 
     docker login --username=yourhubusername --password=yourpassword --email=youremail@company.com
 
-then execute the script.

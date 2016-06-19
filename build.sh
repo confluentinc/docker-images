@@ -11,13 +11,19 @@ fi
 
 set -ex
 
-if [ -z ${DOCKER_HOST+x} ];
-then
-  echo "DOCKER_HOST must be set before running this script.";
-  exit 1
+# Make sure docker is running locally or that DOCKER_HOST is set
+# before starting.
+#
+docker info &> /dev/null
+if [ $? -ne 0 ] ; then
+	if [ -z ${DOCKER_HOST+x} ] ; then
+		echo "docker daemon not running and DOCKER_HOST not set"
+		echo "This script requires a functional docker environment to run.";
+		exit 1
+	fi
 fi
 
-mvn clean package
+mvn ${CLEAN_BUILD:-} package
 
 TAGS=""
 
@@ -77,6 +83,10 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
     SERVER_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'server.properties'`
     cp ./kafka/server.properties "${SERVER_PROPERTIES}"
 
+    # Setup default configurations for connect workers
+    CONNECT_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'connect-distributed.properties'`
+    cp ./connect/connect-distributed.properties "${CONNECT_PROPERTIES}"
+
     # Setup default configurations for rest-proxy
     KAFKA_REST_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'kafka-rest.properties'`
     cp ./rest-proxy/kafka-rest.properties "${KAFKA_REST_PROPERTIES}"
@@ -84,6 +94,10 @@ for SCALA_VERSION in ${SCALA_VERSIONS}; do
     # Setup default configurations for schema-registry
     SCHEMA_REGISTRY_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'schema-registry.properties'`
     cp ./schema-registry/schema-registry.properties "${SCHEMA_REGISTRY_PROPERTIES}"
+
+    # Setup default configurations for control-center
+    CONTROL_CENTER_PROPERTIES=`find "${TAR_ROOT}" -type f -name 'control-center.properties'`
+    cp ./control-center/control-center.properties "${CONTROL_CENTER_PROPERTIES}"
 
     echo "ADD ${TAR_ROOT}/bin/ /usr/bin/" >> "$DOCKER_FILE"
     echo "ADD ${TAR_ROOT}/etc/ /etc/" >> "$DOCKER_FILE"
@@ -126,7 +140,7 @@ echo fi >> ./tools/confluent-tools.sh
 
 
 
-CONFLUENT_IMAGES="schema-registry rest-proxy"
+CONFLUENT_IMAGES="schema-registry rest-proxy control-center"
 
 for IMAGE in ${CONFLUENT_IMAGES}; do
   docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${CONFLUENT_PLATFORM_VERSION}" "${IMAGE}/"
@@ -136,7 +150,7 @@ for IMAGE in ${CONFLUENT_IMAGES}; do
 done
 
 
-KAFKA_IMAGES="kafka tools"
+KAFKA_IMAGES="kafka connect tools"
 
 for IMAGE in ${KAFKA_IMAGES}; do
   docker build $DOCKER_BUILD_OPTS -t "confluent/${IMAGE}:${KAFKA_VERSION}" "${IMAGE}/"

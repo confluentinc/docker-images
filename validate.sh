@@ -13,32 +13,40 @@
 
 . settings.sh
 
-# Change HOST and NET to desired config
 TEXT_TOPIC="validate.t1"
 AVRO_TOPIC="validate.avro1"
-: ${HOST:="confluent"}
+
+# Change HOSTs and NET to desired config
+# If using docker-compose you will need to associate each docker host  to it's host
+# name or IP within the created network (usually zookeer, kafka, and schema-registry).
+# ZK_HOST is your localhost usually if zookeeper has exposed ports from the container
+# if running in docker-compose.
+: ${DOCKER_ZK_HOST:="confluent"}
+: ${DOCKER_KF_HOST:="confluent"}
+: ${DOCKER_SR_HOST:="confluent"}
+: ${ZK_HOST:="confluent"}
 : ${NET:="host"}
 
 echo -e "cleaning up existing validation topics $TEXT_TOPIC and $AVRO_TOPIC\n"
-docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${HOST}:2181 --delete --topic ${TEXT_TOPIC}
-docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${HOST}:2181 --delete --topic ${AVRO_TOPIC}
-docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${HOST}:2181 --create --topic ${TEXT_TOPIC} --partitions 1 --replication-factor 1
-docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${HOST}:2181 --create --topic ${AVRO_TOPIC} --partitions 1 --replication-factor 1
+docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${DOCKER_ZK_HOST}:2181 --delete --topic ${TEXT_TOPIC}
+docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${DOCKER_ZK_HOST}:2181 --delete --topic ${AVRO_TOPIC}
+docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${DOCKER_ZK_HOST}:2181 --create --topic ${TEXT_TOPIC} --partitions 1 --replication-factor 1
+docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-topics --zookeeper ${DOCKER_ZK_HOST}:2181 --create --topic ${AVRO_TOPIC} --partitions 1 --replication-factor 1
 sleep 10
 
 echo -e "producing a message\n"
-echo "hello docker" | docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-console-producer --broker-list ${HOST}:9092 --topic ${TEXT_TOPIC}
+echo "hello docker" | docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-console-producer --broker-list ${DOCKER_KF_HOST}:9092 --topic ${TEXT_TOPIC}
 
 echo -e "consuming a message\n"
-(docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-console-consumer --new-consumer --bootstrap-server ${HOST}:9092 --from-beginning --topic  ${TEXT_TOPIC}) & sleep 5; kill $!
+(docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-console-consumer --new-consumer --bootstrap-server ${DOCKER_KF_HOST}:9092 --from-beginning --topic  ${TEXT_TOPIC}) & sleep 5; kill $!
 
 echo -e "Getting information about our topic from the rest proxy\n"
-curl "http://${HOST}:8082/topics/${TEXT_TOPIC}"
+curl "http://${ZK_HOST}:8082/topics/${TEXT_TOPIC}"
 
 echo -e "\nProducing an Avro message via the rest proxy\n"
  curl -X POST -H "Content-Type: application/vnd.kafka.avro.v1+json" \
       --data '{"value_schema": "{\"type\": \"record\", \"name\": \"User\", \"fields\": [{\"name\": \"name\", \"type\": \"string\"}]}", "records": [{"value": {"name": "testUser"}}]}' \
-      "http://${HOST}:8082/topics/${AVRO_TOPIC}"
+      "http://${ZK_HOST}:8082/topics/${AVRO_TOPIC}"
 
 echo -e "\nConsuming an Avro message, via the avro console consumer\n"
-(docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-avro-console-consumer --new-consumer --bootstrap-server ${HOST}:9092 --from-beginning --topic  ${AVRO_TOPIC} --property schema.registry.url=http://${HOST}:8081) & sleep 5; kill $!
+(docker run --rm --interactive --net=${NET} "confluent/tools:${KAFKA_VERSION}" kafka-avro-console-consumer --new-consumer --bootstrap-server ${DOCKER_KF_HOST}:9092 --from-beginning --topic  ${AVRO_TOPIC} --property schema.registry.url=http://${DOCKER_SR_HOST}:8081) & sleep 5; kill $!

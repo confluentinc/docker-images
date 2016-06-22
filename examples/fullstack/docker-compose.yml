@@ -14,7 +14,6 @@ services:
       - "9092:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_HOST_NAME: $DOCKER_MACHINE
       WAIT_FOR: dockerize -wait tcp://zookeeper:2181
   rest-proxy:
     image: confluent/rest-proxy

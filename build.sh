@@ -176,7 +176,7 @@ for TAG in ${TAGS}; do
 
   if [ "${PRIVATE_REPOSITORY}z" != "z" ];
   then
-    docker tag $DOCKER_TAG_OPTS "${TAG}" "${PRIVATE_REPOSITORY}/${TAG}"
-    docker push "${PRIVATE_REPOSITORY}/${TAG}"
+    docker tag $DOCKER_TAG_OPTS "${TAG}" "${PRIVATE_REPOSITORY}/${TAG#*/}"
+    docker push "${PRIVATE_REPOSITORY}/${TAG#*/}"
   fi
 done

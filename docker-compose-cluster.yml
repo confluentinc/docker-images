@@ -1,0 +1,61 @@
+version: '2'
+
+services:
+  zookeeper:
+    image: amikamsn/confluent-zookeeper
+    ports:
+      - "2181"
+    networks:
+      global:
+        aliases:
+          - zookeeper
+
+  kafka:
+    image: amikamsn/confluent-kafka
+    ports:
+      - "9092:9092"
+    networks:
+      global:
+        aliases:
+          - kafka
+    depends_on: 
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+
+  schema-registry:
+    image: amikamsn/confluent-schema-registry
+    ports:
+      - "8081"
+    networks:
+      global:
+        aliases:
+          - schema-registry
+    depends_on: 
+      - zookeeper
+      - kafka
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
+
+  rest-proxy:
+    image: amikamsn/confluent-rest-proxy
+    ports:
+      - "8082"
+    networks:
+      global:
+        aliases:
+         - rest-proxy
+    depends_on: 
+      - zookeeper
+      - kafka
+      - schema-registry
+    environment:
+      RP_ZOOKEEPER_CONNECT: zookeeper:2181
+      RP_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
+
+networks:
+  global:
+    driver: overlay

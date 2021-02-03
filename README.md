@@ -1,7 +1,7 @@
 Confluent Stream Data Platform on Docker (DEPRECATED)
 ========================================
 
-**Note: These images are no longer being updated.  Confluent's versions of Docker images for Confluent Platform may be found [here](https://github.com/confluentinc/cp-docker-images).**
+**Note: These images are no longer being updated.  Confluent's versions of Docker images for Confluent Platform may be found [here](https://github.com/confluentinc/kafka-images).**
 
 Experimental docker images for running the
 [Confluent Platform](http://confluent.io/docs/current/index.html).

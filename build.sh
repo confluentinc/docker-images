@@ -11,12 +11,6 @@ fi
 
 set -ex
 
-if [ -z ${DOCKER_HOST+x} ];
-then
-  echo "DOCKER_HOST must be set before running this script.";
-  exit 1
-fi
-
 mvn clean package
 
 TAGS=""

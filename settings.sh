@@ -6,7 +6,7 @@
 : ${KAFKA_VERSION:="0.10.0.0-cp1"}
 : ${ZOOKEEPER_VERSION:="3.4.6-cp1"}
 : ${DOCKER_BUILD_OPTS:="--rm=true "}
-: ${DOCKER_TAG_OPTS:="-f "}
+: ${DOCKER_TAG_OPTS:=""}
 : ${PACKAGE_URL:="http://packages.confluent.io/archive/3.0"}
 
 #PRIVATE_REPOSITORY=""

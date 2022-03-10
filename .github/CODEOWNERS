@@ -1,0 +1,3 @@
+# See go/codeowners - automatically generated for confluentinc/docker-images:
+*	@rmoff
+*	@samjhecht
